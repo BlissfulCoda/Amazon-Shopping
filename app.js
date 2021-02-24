@@ -7,15 +7,32 @@ const user = {
     purchases: []
 }
 
-purchaseItem(user, {name: 'Iphone', price: 600})
-function purchaseItem(user, item){
-    return Object.assign({}, user, {purchases: item})
+const compose = (f, g) => (...args) => f(g(...args))
+
+console.log(purchaseItem(
+    emptyCart,
+    buyItem,
+    applyTaxToItems,
+    addItemToCart
+    )(user, {name: 'MacBook', price: 800}))
+
+function purchaseItem(...fns){
+    return fns.reduce(compose)
 }
 
-function addItemToCart(){}
+function addItemToCart(user, item){
+    const updatedCart = user.cart.concat(item);
+    return Object.assign({}, user, {cart: updatedCart})
+}
 
-function applyTaxToItems(){}
+function applyTaxToItems(user){
+    return user;
+}
 
-function buyItem() {}
+function buyItem(user){
+    return user;
+}
 
-function emptyCart() {}
+function emptyCart(user){
+    return user;
+}
